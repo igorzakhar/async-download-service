@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Микросервис для скачивания файлов</title>
+  </head>
+  <body class="py-4">
+    <div class="container">
+      <h1>Микросервис для скачивания файлов</h1>
+      <p class="lead">Это тестовая страница, она скрыта от пользователя.</p>
+
+      <p>Микросервис помогает работе основного сайта, сделанного на CMS и обслуживает
+      запросы на скачивание архивов с файлами. Микросервис не умеет ничего, кроме упаковки файлов
+      в архив. Закачиваются файлы на сервер через FTP или админку CMS.</p>
+
+      <p>Создание архива происходит на лету по запросу от пользователя. Архив не сохраняется на диске, вместо этого по мере упаковки он сразу отправляется пользователю на скачивание.</p>
+
+      <p>От неавторизованного доступа архив защищен хешом в адресе ссылки на скачивание, например: <code>http://host.ru/archive/3bea29ccabbbf64bdebcc055319c5745/</code>. Хеш задается названием каталога с файлами, выглядит структура каталога так:</p>
+
+      <code><pre>
+        - photos
+            - 3bea29ccabbbf64bdebcc055319c5745
+              - 1.jpg
+              - 2.jpg
+              - 3.jpg
+            - af1ad8c76fda2e48ea9aed2937e972ea
+              - 1.jpg
+              - 2.jpg
+      </pre></code>
+
+      <h2 class="mt-5 mb-3">Ссылки для тестирования</h2>
+
+      <div class="row">
+        <div class="col-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Архив #1</h5>
+              <p class="card-text">Хеш архива <code>7kna</code>.</p>
+              <a href="/archive/7kna/" target="_blank" class="btn btn-primary">Скачать</a>
+            </div>
+          </div>          
+        </div>
+
+        <div class="col-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Архив #2</h5>
+              <p class="card-text">Хеш архива <code>rur2</code>.</p>
+              <a href="/archive/rur2/" target="_blank" class="btn btn-primary">Скачать</a>
+            </div>
+          </div>          
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
