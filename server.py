@@ -1,12 +1,19 @@
 import asyncio
+import os.path
 
 from aiohttp import web
 import aiofiles
 
 
 async def archivate(request):
-    target_dir = request.match_info['archive_hash']
-    cmd = f'zip -r - . -i test_photos/{target_dir}/* -j'
+    base_dir = 'test_photos'
+    archive_dir = request.match_info['archive_hash']
+    archive_path = os.path.join(base_dir, archive_dir)
+
+    if not os.path.exists(archive_path):
+        raise web.HTTPNotFound(text='Архив не существует или был удален')
+
+    cmd = f'zip -r - . -i {archive_path}/* -j'
     process = await asyncio.create_subprocess_shell(
         cmd,
         stdout=asyncio.subprocess.PIPE,
