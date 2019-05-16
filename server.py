@@ -1,8 +1,12 @@
 import asyncio
+import logging
 import os.path
 
 from aiohttp import web
 import aiofiles
+
+
+logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 
 
 async def archivate(request):
@@ -26,9 +30,10 @@ async def archivate(request):
 
     await resp.prepare(request)
 
-    chunk_size_bytes = 1
+    chunk_size_bytes = 1024
     while True:
         archive_chunk = await process.stdout.read(chunk_size_bytes)
+        logging.debug('Sending archive chunk ...')
         if not archive_chunk:
             break
         await resp.write(archive_chunk)
