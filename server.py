@@ -29,15 +29,22 @@ async def archivate(request):
 
     await resp.prepare(request)
 
-    response_delay = 0.1
+    response_delay = 0
     chunk_size_bytes = 8192
-    while True:
-        archive_chunk = await process.stdout.read(chunk_size_bytes)
-        logging.debug('Sending archive chunk ...')
-        if not archive_chunk:
-            break
-        await resp.write(archive_chunk)
-        await asyncio.sleep(response_delay)
+    try:
+        while True:
+            archive_chunk = await process.stdout.read(chunk_size_bytes)
+            logging.debug('Sending archive chunk ...')
+            if not archive_chunk:
+                break
+            await resp.write(archive_chunk)
+            await asyncio.sleep(response_delay)
+    except asyncio.CancelledError:
+        process.kill()
+        raise
+    finally:
+        resp.force_close()
+
     return resp
 
 
