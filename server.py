@@ -17,9 +17,8 @@ async def archivate(request):
     if not os.path.exists(archive_path):
         raise web.HTTPNotFound(text='Архив не существует или был удален')
 
-    cmd = f'zip -r - . -i {archive_path}/* -j'
     process = await asyncio.create_subprocess_shell(
-        cmd,
+        f'zip -r - {archive_path} -j',
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE
     )
