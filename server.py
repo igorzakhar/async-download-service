@@ -54,10 +54,14 @@ async def handle_index_page(request):
     return web.Response(text=index_contents, content_type='text/html')
 
 
-if __name__ == '__main__':
+def main():
     app = web.Application()
     app.add_routes([
         web.get('/', handle_index_page),
         web.get('/archive/{archive_hash}/', archivate),
     ])
     web.run_app(app)
+
+
+if __name__ == '__main__':
+    main()
