@@ -19,19 +19,56 @@
       - 2.jpg
 ```
 
-
 ## Как установить
 
-Для работы микросервиса нужен Python версии не ниже 3.6.
+Для работы микросервиса нужен Python версии не ниже 3.7+.  
+Также в программе используются следующие сторонние библиотеки:
+- aiohttp [https://aiohttp.readthedocs.io/en/stable/](https://aiohttp.readthedocs.io/en/stable/);
+- aiofiles [https://github.com/Tinche/aiofiles](https://github.com/Tinche/aiofiles);
 
+Рекомендуется устанавливать зависимости в виртуальном окружении, используя [virtualenv](https://github.com/pypa/virtualenv), [virtualenvwrapper](https://pypi.python.org/pypi/virtualenvwrapper) или [venv](https://docs.python.org/3/library/venv.html).
+
+1. Скопируйте репозиторий в текущий каталог. Воспользуйтесь командой:  
 ```bash
-pip install -r requirements.txt
+$ git clone https://github.com/igorzakhar/async-download-service.git async_download_service
+```
+После этого программа будет скопирована в каталог ```async_download_service```
+
+2. Создайте и активируйте виртуальное окружение:
+```bash
+$ cd async_download_service # Переходим в каталог с программой
+$ python3 -m venv my_virtual_environment # Создаем виртуальное окружение
+$ source my_virtual_environment/bin/activate # Активируем виртуальное окружение
+```
+
+3. Установите сторонние библиотеки  из файла зависимостей:
+```bash
+$ pip install -r requirements.txt # В качестве альтернативы используйте pip3
 ```
 
 ## Как запустить
-
+Для просмотра справочной информации по использованию программы используйте ключ ```-h``` или ```--help```:
 ```bash
-python server.py
+$ python3 server.py -h
+```
+
+Аргументы командной строки:
+```
+server.py [-h] [-H HOST] [-P PORT] [-D DIR] [-d DELAY] [-v]
+```
+- ```-h, --help``` - Вызов справки.
+- ```-H HOST, --host HOST ``` -  IP адрес хоста, на котором работает HTTP сервер (значение по умолчанию ```0.0.0.0```)
+- ```-P PORT, --port PORT``` - TCP порт, на котором сервис будет ожидать входящие запросы (значение по умолчанию ```8080```).
+- ```-D DIR, --dir DIR``` -  Директория файлового хранилища (значение по умолчанию ```test_photos```).
+- ```-d DELAY, --delay DELAY``` - Задержка между отправкой фрагментов архивного файла в секундах (значение по умолчанию ```0```). 
+- ```-v, --verbose``` - Устанавливает уровень логгирования ```DEBUG``` (по умолчанию установлен уровень ```INFO```). Также выводится информация об отправке файла.
+
+
+Пример запуска в Linux(Debian 9.0), Python 3.7.3:
+```bash
+$ python server.py
+======== Running on http://0.0.0.0:8080 ========
+(Press CTRL+C to quit)
 ```
 
 Сервер запустится на порту 8080, чтобы проверить его работу перейдите в браузере на страницу [http://127.0.0.1:8080/](http://127.0.0.1:8080/).
