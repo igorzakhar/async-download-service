@@ -2,7 +2,7 @@ import asyncio
 import argparse
 from functools import partial
 import logging
-import os.path
+import os
 
 from aiohttp import web
 import aiofiles
@@ -15,8 +15,9 @@ async def archivate(request, storage_dir, delay_send, chunk_size_bytes=8192):
     if not os.path.exists(archive_path):
         raise web.HTTPNotFound(text='Архив не существует или был удален')
 
-    process = await asyncio.create_subprocess_shell(
-        f'zip -r - {archive_path} -j',
+    cmd = ['zip', '-jr', '-', archive_path]
+    process = await asyncio.create_subprocess_exec(
+        *cmd,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE
     )
@@ -36,9 +37,9 @@ async def archivate(request, storage_dir, delay_send, chunk_size_bytes=8192):
             await resp.write(archive_chunk)
             await asyncio.sleep(delay_send)
     except asyncio.CancelledError:
-        process.kill()
         raise
     finally:
+        process.kill()
         resp.force_close()
 
     return resp
@@ -61,7 +62,8 @@ def process_args():
         '-P', '--port', default=8080, help="TCP/IP port for HTTP server."
     )
     parser.add_argument(
-        '-D', '--dir', default='test_photos', help='File storage directory.'
+        '-D', '--dir', default=f'{os.getcwd()}/test_photos',
+        help='File storage directory.'
     )
     parser.add_argument(
         '-d', '--delay', default=0.0, type=float,
