@@ -8,19 +8,26 @@ from aiohttp import web
 import aiofiles
 
 
-async def archivate(request, storage_dir, delay_send, chunk_size_bytes=8192):
-    archive_dir = request.match_info['archive_hash']
-    archive_path = os.path.join(storage_dir, archive_dir)
-
-    if not os.path.exists(archive_path):
-        raise web.HTTPNotFound(text='Архив не существует или был удален')
-
-    cmd = ['zip', '-jr', '-', archive_path]
-    process = await asyncio.create_subprocess_exec(
+async def get_archive_process(path_source_dir):
+    cmd = ['zip', '-jr', '-', path_source_dir]
+    archive_process = await asyncio.create_subprocess_exec(
         *cmd,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE
     )
+    return archive_process
+
+
+async def archivate(request, storage_dir, delay_send, chunk_size_bytes=8192):
+    archive_dir = request.match_info['archive_hash']
+    path_source_dir = os.path.join(storage_dir, archive_dir)
+
+    if not os.path.exists(path_source_dir):
+        raise web.HTTPNotFound(
+            text='Archive does not exist or has been deleted.'
+        )
+
+    archive_process = await get_archive_process(path_source_dir)
 
     resp = web.StreamResponse()
     resp.headers['Content-Type'] = 'application/zip'
@@ -30,7 +37,7 @@ async def archivate(request, storage_dir, delay_send, chunk_size_bytes=8192):
 
     try:
         while True:
-            archive_chunk = await process.stdout.read(chunk_size_bytes)
+            archive_chunk = await archive_process.stdout.read(chunk_size_bytes)
             logging.debug('Sending archive chunk ...')
             if not archive_chunk:
                 break
@@ -39,7 +46,7 @@ async def archivate(request, storage_dir, delay_send, chunk_size_bytes=8192):
     except asyncio.CancelledError:
         raise
     finally:
-        process.kill()
+        archive_process.kill()
         resp.force_close()
 
     return resp
@@ -59,7 +66,7 @@ def process_args():
         '-H', '--host', default='0.0.0.0', help='TCP/IP host for HTTP server.'
     )
     parser.add_argument(
-        '-P', '--port', default=8080, help="TCP/IP port for HTTP server."
+        '-P', '--port', default=8080, help='TCP/IP port for HTTP server.'
     )
     parser.add_argument(
         '-D', '--dir', default=f'{os.getcwd()}/test_photos',
